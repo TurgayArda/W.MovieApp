@@ -61,8 +61,7 @@ extension MovieListProvider: UICollectionViewDataSource, UICollectionViewDelegat
         if isSearch {
             return searchHeader.count
         }
-        let titleCount =  movieData
-        return titleCount.count
+        return 1
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

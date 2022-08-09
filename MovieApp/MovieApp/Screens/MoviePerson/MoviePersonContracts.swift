@@ -12,6 +12,10 @@ import Foundation
 protocol MoviePersonViewModelProtocol {
     var delegate: MoviePersonViewModelDelegate? { get set}
     func loadPerson()
+    func getPersonName() -> String
+    func getProperty() -> String
+    func getBirthday() -> String
+    func getBiography() -> String
 }
 
 enum MoviePersonOutPut {

@@ -149,46 +149,55 @@ class MovieDetailVC: UIViewController {
     }
     
     private func propertyUIVideo(movieVideo: [Video]) {
-        if movieVideo.count == 0 {
-            youtubePlayer.load(withVideoId: "jj6v5ky5u00")
-        }else{
-            if let key = movieVideo[0].key {
-                let videoKey = key
-                youtubePlayer.load(withVideoId: videoKey)
-            }
-        }
+//        if movieVideo.count == 0 {
+//            youtubePlayer.load(withVideoId: "jj6v5ky5u00")
+//        }else{
+//            if let key = movieVideo[0].key {
+//                let videoKey = key
+//                youtubePlayer.load(withVideoId: videoKey)
+//            }
+//        }
+        guard let videoKey = movieDetailViewModel?.getVideo() else { return }
+        youtubePlayer.load(withVideoId: videoKey)
     }
     
     private func propertyUICast(movieCast: [Cast]) {
-        for i in 0..<movieCast.count {
-            if let name = movieCast[i].name {
-                movieCastList += "\(name), "
-            }else{
-                movieCastList += "\(MovieDetailConstant.PropertyLabel.unknown.rawValue)"
-            }
-        }
-        movieCastLabel.text = "\(MovieDetailConstant.PropertyLabel.cast.rawValue): \([movieCastList])"
+//        for i in 0..<movieCast.count {
+//            if let name = movieCast[i].name {
+//                movieCastList += "\(name), "
+//            }else{
+//                movieCastList += "\(MovieDetailConstant.PropertyLabel.unknown.rawValue)"
+//            }
+//        }
+//        movieCastLabel.text = "\(MovieDetailConstant.PropertyLabel.cast.rawValue): \([movieCastList])"
+        movieCastLabel.text = movieDetailViewModel?.getCastList()
     }
     
     
     private func propertyUIDetail(movieDetail: MovieDetailResult) {
-        if let name = movieDetail.originalTitle  {
-            movieName.text =  "\(MovieDetailConstant.PropertyLabel.name.rawValue): \(name)"
-        }else{
-            movieName.text =  "\(MovieDetailConstant.PropertyLabel.name.rawValue): \(MovieDetailConstant.PropertyLabel.unknown.rawValue)"
-        }
+//        if let name = movieDetail.originalTitle  {
+//            movieName.text =  "\(MovieDetailConstant.PropertyLabel.name.rawValue): \(name)"
+//        }else{
+//            movieName.text =  "\(MovieDetailConstant.PropertyLabel.name.rawValue): \(MovieDetailConstant.PropertyLabel.unknown.rawValue)"
+//        }
         
-        if let rating = movieDetail.voteAverage {
-            movieRating.text = "\(MovieDetailConstant.PropertyLabel.rating.rawValue): \(rating)"
-        }else{
-            movieRating.text = "\(MovieDetailConstant.PropertyLabel.rating.rawValue): \(MovieDetailConstant.PropertyLabel.unknown.rawValue)"
-        }
+        movieName.text = movieDetailViewModel?.getMovieDetailName()
         
-        if let overview = movieDetail.overview {
-            movieDescription.text = overview
-        }else{
-            movieDescription.text = "\(MovieDetailConstant.PropertyLabel.unknown.rawValue)"
-        }
+//        if let rating = movieDetail.voteAverage {
+//            movieRating.text = "\(MovieDetailConstant.PropertyLabel.rating.rawValue): \(rating)"
+//        }else{
+//            movieRating.text = "\(MovieDetailConstant.PropertyLabel.rating.rawValue): \(MovieDetailConstant.PropertyLabel.unknown.rawValue)"
+//        }
+         
+        movieRating.text = movieDetailViewModel?.getRating()
+        
+//        if let overview = movieDetail.overview {
+//            movieDescription.text = overview
+//        }else{
+//            movieDescription.text = "\(MovieDetailConstant.PropertyLabel.unknown.rawValue)"
+//        }
+        
+        movieDescription.text = movieDetailViewModel?.getOverview()
         
         if let image = movieDetail.backdropPath {
             if let url = URL(string: MovieDetailConstant.profileImage.pathImage(path: image)) {
@@ -197,6 +206,7 @@ class MovieDetailVC: UIViewController {
         }else{
             movieImage.image = UIImage(named: "NoImage")
         }
+        
     }
 }
 

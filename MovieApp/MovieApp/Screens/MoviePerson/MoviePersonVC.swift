@@ -144,40 +144,45 @@ class MoviePersonVC: UIViewController {
     }
     
     private func propertyUI(person: Person) {
-        if person.gender == 2 {
-            personGender.text = "\(MoviePersonConstant.PropertyLabel.gender.rawValue): \(MoviePersonConstant.PropertyLabel.male.rawValue)"
-        }
+//        if person.gender == 2 {
+//            personGender.text = "\(MoviePersonConstant.PropertyLabel.gender.rawValue): \(MoviePersonConstant.PropertyLabel.male.rawValue)"
+//        }
+//
+//        if person.gender == 1 {
+//            personGender.text = "\(MoviePersonConstant.PropertyLabel.gender.rawValue): \(MoviePersonConstant.PropertyLabel.female.rawValue)"
+//        }
+//
+//        if person.gender == 1 || person.gender == 2 {
+//            personGender.text = "\(MoviePersonConstant.PropertyLabel.gender.rawValue): \(MoviePersonConstant.PropertyLabel.unknown.rawValue)"
+//        }
+//
+//        if let name = person.name {
+//            personName.text = "\(MoviePersonConstant.PropertyLabel.name.rawValue): \(name)"
+//        }else{
+//            personName.text = "\(MoviePersonConstant.PropertyLabel.name.rawValue): \(MoviePersonConstant.PropertyLabel.unknown.rawValue)"
+//        }
+//
+//        if let birthday = person.birthday {
+//            personBirthday.text = "\(MoviePersonConstant.PropertyLabel.birthday.rawValue): \(birthday)"
+//        }else{
+//            personBirthday.text = "\(MoviePersonConstant.PropertyLabel.birthday.rawValue): \(MoviePersonConstant.PropertyLabel.unknown.rawValue)"
+//        }
+//
+//        if let biography = person.biography {
+//            if biography == "" {
+//                personDescription.text = "\(MoviePersonConstant.PropertyLabel.unknown.rawValue)"
+//            }else{
+//                personDescription.text = biography
+//            }
+//
+//        }else{
+//            personDescription.text = "\(MoviePersonConstant.PropertyLabel.unknown.rawValue)"
+//        }
         
-        if person.gender == 1 {
-            personGender.text = "\(MoviePersonConstant.PropertyLabel.gender.rawValue): \(MoviePersonConstant.PropertyLabel.female.rawValue)"
-        }
-        
-        if person.gender == 1 || person.gender == 2 {
-            personGender.text = "\(MoviePersonConstant.PropertyLabel.gender.rawValue): \(MoviePersonConstant.PropertyLabel.unknown.rawValue)"
-        }
-        
-        if let name = person.name {
-            personName.text = "\(MoviePersonConstant.PropertyLabel.name.rawValue): \(name)"
-        }else{
-            personName.text = "\(MoviePersonConstant.PropertyLabel.name.rawValue): \(MoviePersonConstant.PropertyLabel.unknown.rawValue)"
-        }
-      
-        if let birthday = person.birthday {
-            personBirthday.text = "\(MoviePersonConstant.PropertyLabel.birthday.rawValue): \(birthday)"
-        }else{
-            personBirthday.text = "\(MoviePersonConstant.PropertyLabel.birthday.rawValue): \(MoviePersonConstant.PropertyLabel.unknown.rawValue)"
-        }
-        
-        if let biography = person.biography {
-            if biography == "" {
-                personDescription.text = "\(MoviePersonConstant.PropertyLabel.unknown.rawValue)"
-            }else{
-                personDescription.text = biography
-            }
-          
-        }else{
-            personDescription.text = "\(MoviePersonConstant.PropertyLabel.unknown.rawValue)"
-        }
+        personGender.text = personVievModel?.getProperty()
+        personName.text = personVievModel?.getPersonName()
+        personBirthday.text = personVievModel?.getBirthday()
+        personDescription.text = personVievModel?.getBiography()
         
         if let profilePath = person.profilePath {
             if let url = URL(string: MoviePersonConstant.profileImage.pathImage(path: profilePath)) {

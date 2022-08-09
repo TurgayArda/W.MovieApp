@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 //MARK: - ViewModel
 
@@ -14,6 +15,12 @@ protocol MovieDetailViewModelProtocol {
     func loadDetail()
     func loadCast()
     func loadVideo()
+    func getVideo() -> String
+    func getCastList() -> String
+    func getMovieDetailName() -> String
+    func getRating() -> String
+    func getOverview() -> String
+    func getImage(movieImage: UIImageView) -> UIImageView
 }
 
 //MARK: ViewController
