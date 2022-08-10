@@ -28,13 +28,13 @@ class MovieListVC: UIViewController {
         collectionView.register(
             MovieListCollectionViewCell.self,
             forCellWithReuseIdentifier: MovieListCollectionViewCell.Identifier.path.rawValue
-            )
+        )
         collectionView.register(SearchCollectionReusableView.self,
                                 forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                                 withReuseIdentifier: SearchCollectionReusableView.identifier
-            )
-         return collectionView
-     }()
+        )
+        return collectionView
+    }()
     
     private lazy var indicatorRequest: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView()
@@ -64,12 +64,12 @@ class MovieListVC: UIViewController {
     private let sectionHeader = ["Movie", "TV", "Person"]
     
     var movieListViewModel: MovieListViewModelProtocol?
-
+    
     //MARK: - Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         initDelegate()
         movieListViewModel?.load()
         configure()
@@ -88,25 +88,30 @@ class MovieListVC: UIViewController {
     private func configure() {
         navigationItem.searchController = searchBar
         view.backgroundColor = .systemGray6
+        
         view.addSubview(collectionView)
         view.addSubview(indicatorRequest)
+        configureConstraints()
+      
+    }
+    
+    private func configureConstraints() {
         makeIndcator()
         movieCollection()
-     
     }
 }
 
 //MARK: UISearchBarDelegate
 
 extension MovieListVC: UISearchBarDelegate {
-     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         guard let text = searchBar.text else { return }
-         movieProvider.remove()
-         isSearch = true
-         
-         movieListViewModel?.searchMovieLoad(path: text)
-         movieListViewModel?.searchTVLoad(path: text)
-         movieListViewModel?.searchPersonLoad(path: text)
+        movieProvider.remove()
+        isSearch = true
+        
+        movieListViewModel?.searchMovieLoad(path: text)
+        movieListViewModel?.searchTVLoad(path: text)
+        movieListViewModel?.searchPersonLoad(path: text)
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
@@ -123,14 +128,14 @@ extension MovieListVC: UISearchBarDelegate {
 //MARK: MovieListProviderDelegate
 
 extension MovieListVC: MovieListProviderDelegate {
-    func getWidth() -> CGFloat {
-        return view.frame.size.width
-    }
-    
-    func selected(at select: Int) {
-        let viewController = MovieDetailBuilder.make(id: select)
+    func selected(at select: Any) {
+        let viewController = MovieDetailBuilder.make(value: select)
         viewController.modalPresentationStyle = .fullScreen
         self.show(viewController, sender: nil)
+    }
+    
+    func getWidth() -> CGFloat {
+        return view.frame.size.width
     }
 }
 
@@ -145,7 +150,7 @@ extension MovieListVC: MovieListViewModelDelegate {
             movieArray.append(contentsOf: movie)
             
             sectionList["Movie"] = movieArray
-           
+            
         case .showError(let error):
             self.searchMovieError = error
         }
@@ -202,7 +207,7 @@ extension MovieListVC: MovieListViewModelDelegate {
             makeEmptyLabel()
             collectionView.isHidden = true
         case .isLoading(let loading):
-        loading ? indicatorRequest.startAnimating() : indicatorRequest.stopAnimating()
+            loading ? indicatorRequest.startAnimating() : indicatorRequest.stopAnimating()
         }
     }
 }

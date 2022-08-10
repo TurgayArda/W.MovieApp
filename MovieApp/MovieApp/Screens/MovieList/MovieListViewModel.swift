@@ -9,17 +9,14 @@ import Foundation
 
 final class MovieListViewModel: MovieListViewModelProtocol {
     var delegate: MovieListViewModelDelegate?
-    var service: MovieListServiceProtocol?
-    var searchMovieService: SearchMovieServiceProtocol?
-    var searchTVService: SearchTVServiceProtocol?
-    var searchPersonService: SearchPersonServiceProtocol?
+    var httpClient: HttpClientProtocol?
+    var movieData: [Movie] = []
+    var tvData: [TV] = []
+    var personData: [PersonResult] = []
     
-    init(service: MovieListServiceProtocol, searchMovieService: SearchMovieServiceProtocol, searchTVService: SearchTVServiceProtocol, searchPersonService: SearchPersonServiceProtocol) {
-        self.service = service
-        self.searchMovieService = searchMovieService
-        self.searchTVService = searchTVService
-        self.searchPersonService = searchPersonService
-        
+    
+    init(httpClient: HttpClientProtocol) {
+        self.httpClient = httpClient
     }
 }
 
@@ -27,34 +24,55 @@ final class MovieListViewModel: MovieListViewModelProtocol {
 
 extension MovieListViewModel {
     func searchMovieLoad(path: String) {
-        searchMovieService?.fetchAllData(path: path, onSuccess: { [delegate] movie in
-            delegate?.searchMovieHandleOutPut(.searchMovie(movie))
-        }, onError: { [delegate] error in
-            delegate?.searchMovieHandleOutPut(.showError(error))
+        guard let url = URL(string: MovieNetworkConstant.SearchMovieNetwork.searchMovieURL(path: path)) else { return }
+        httpClient?.fetch(url: url,
+                          completion: { [delegate] (result: Result<MovieResult, Error>) in
+            switch result {
+            case .success(let movie):
+                guard let movieDataTwo =  movie.results else { return }
+                self.movieData = movieDataTwo
+                delegate?.searchMovieHandleOutPut(.searchMovie(self.movieData))
+            case .failure(let error):
+                delegate?.searchMovieHandleOutPut(.showError(error.localizedDescription))
+            }
         })
     }
 }
-    
+
 //MARK: - searchTVLoad(path: String)
 
 extension MovieListViewModel {
     func searchTVLoad(path: String) {
-        searchTVService?.fetchAllData(path: path, onSuccess: { [delegate] tv in
-            delegate?.searchTVHandleOutPut(.searchTV(tv))
-        }, onError: { [delegate] error in
-            delegate?.searchTVHandleOutPut(.showError(error))
+        guard let url = URL(string: MovieNetworkConstant.SearchTVNetwork.searchTVURL(path: path)) else { return }
+        httpClient?.fetch(url: url,
+                          completion: { [delegate] (result: Result<SearchTVResult, Error>) in
+            switch result {
+            case .success(let tv):
+                guard let tvDataTwo =  tv.results else { return }
+                self.tvData = tvDataTwo
+                delegate?.searchTVHandleOutPut(.searchTV(self.tvData))
+            case .failure(let error):
+                delegate?.searchTVHandleOutPut(.showError(error.localizedDescription))
+            }
         })
     }
 }
-    
+
 //MARK: - searchPersonLoad(path: String)
 
 extension MovieListViewModel {
     func searchPersonLoad(path: String) {
-        searchPersonService?.fetchAllData(path: path, onSuccess: { [delegate] person in
-            delegate?.searchPersonHandleOutPut(.searchPerson(person))
-        }, onError: { [delegate] error in
-            delegate?.searchPersonHandleOutPut(.showError(error))
+        guard let url = URL(string: MovieNetworkConstant.SearchPersonNetwork.searchPersonURL(path: path)) else { return }
+        httpClient?.fetch(url: url,
+                          completion: { [delegate] (result: Result<SearchPersonResult, Error>) in
+            switch result {
+            case .success(let person):
+                guard let personDataTwo =  person.results else { return }
+                self.personData = personDataTwo
+                delegate?.searchPersonHandleOutPut(.searchPerson(self.personData))
+            case .failure(let error):
+                delegate?.searchPersonHandleOutPut(.showError(error.localizedDescription))
+            }
         })
     }
 }
@@ -64,12 +82,19 @@ extension MovieListViewModel {
 extension MovieListViewModel {
     func load() {
         delegate?.handleOutPut(.isLoading(true))
-        service?.fetchAllData(success: { [delegate] data in
-            delegate?.handleOutPut(.showMovieList(data))
-            delegate?.handleOutPut(.isLoading(false))
-        }, fail: { [delegate] error in
-            delegate?.handleOutPut(.showError(error))
-            delegate?.handleOutPut(.isLoading(false))
+        guard let url = URL(string: MovieNetworkConstant.MovieListNetwork.movieListURL()) else { return }
+        httpClient?.fetch(url: url,
+                          completion: { [delegate] (result: Result<MovieResult, Error>) in
+            switch result {
+            case .success(let movie):
+                guard let movieDataTwo =  movie.results else { return }
+                self.movieData = movieDataTwo
+                delegate?.handleOutPut(.showMovieList(self.movieData))
+                delegate?.handleOutPut(.isLoading(false))
+            case .failure(let error):
+                delegate?.handleOutPut(.isLoading(false))
+                delegate?.handleOutPut(.showError(error.localizedDescription))
+            }
         })
     }
 }

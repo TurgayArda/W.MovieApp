@@ -10,7 +10,7 @@ import Foundation
 final class MoviePersonBuilder {
     static func make(personID: Int) -> MoviePersonVC {
         let view = MoviePersonVC()
-        let viewModel = MoviePersonViewModel(personID: personID, personService: MoviePersonService())
+        let viewModel = MoviePersonViewModel(personID: personID, httpClient: HttpClient())
         view.personVievModel = viewModel
         return view
     }

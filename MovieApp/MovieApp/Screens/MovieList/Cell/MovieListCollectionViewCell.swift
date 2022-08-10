@@ -32,7 +32,7 @@ class MovieListCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(image)
         return image
     }()
-
+    
     private lazy var movieName: UILabel = {
         let label = UILabel()
         label.font = .boldSystemFont(ofSize: 15)
@@ -43,6 +43,8 @@ class MovieListCollectionViewCell: UICollectionViewCell {
         contentView.addSubview(label)
         return label
     }()
+    
+    var cellViewModel: MovieListCollectionCellViewModelProtocol?
     
     private lazy var loadingIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView()
@@ -73,16 +75,12 @@ class MovieListCollectionViewCell: UICollectionViewCell {
     }
     
     func propertyUIMovie(value: Movie) {
-        if let rating = value.voteAverage {
-            movieRating.text = "\(MovieListConstant.PropertyLabel.rating.rawValue): \(rating)"
-        }
-    
-        if let name = value.title {
-            movieName.text = name
-        }
+        movieRating.text = cellViewModel?.getSearchMovieRating(movie: value)
+        movieName.text = cellViewModel?.getSearchMovieName(movie: value)
+        
         if let image = value.backdropPath {
             if let url = URL(string: MovieListConstant.profileImage.pathImage(path: image)) {
-                    movieimage.af.setImage(withURL: url)
+                movieimage.af.setImage(withURL: url)
             }
         }else{
             movieimage.image = UIImage(named: "NoImage")
@@ -90,16 +88,12 @@ class MovieListCollectionViewCell: UICollectionViewCell {
     }
     
     func propertyUITV(value: TV) {
-        if let rating = value.voteAverage {
-            movieRating.text = "\(MovieListConstant.PropertyLabel.rating.rawValue): \(rating)"
-        }
-    
-        if let name = value.name {
-            movieName.text = name
-        }
+        movieRating.text = cellViewModel?.getTVRating(tv: value)
+        movieName.text = cellViewModel?.getTVName(tv: value)
+        
         if let image = value.backdropPath {
             if let url = URL(string: MovieListConstant.profileImage.pathImage(path: image)) {
-                    movieimage.af.setImage(withURL: url)
+                movieimage.af.setImage(withURL: url)
             }
         }else{
             movieimage.image = UIImage(named: "NoImage")
@@ -107,16 +101,12 @@ class MovieListCollectionViewCell: UICollectionViewCell {
     }
     
     func propertyUIPerson(value: KnownFor) {
-        if let rating = value.voteAverage {
-            movieRating.text = "\(MovieListConstant.PropertyLabel.rating.rawValue): \(rating)"
-        }
-
-        if let name = value.title {
-            movieName.text = name
-        }
+        movieRating.text = cellViewModel?.getPersonRating(person: value)
+        movieName.text = cellViewModel?.getPersonName(person: value)
+        
         if let image = value.backdropPath {
             if let url = URL(string: MovieListConstant.profileImage.pathImage(path: image)) {
-                    movieimage.af.setImage(withURL: url)
+                movieimage.af.setImage(withURL: url)
             }
         }else{
             movieimage.image = UIImage(named: "NoImage")
@@ -125,22 +115,12 @@ class MovieListCollectionViewCell: UICollectionViewCell {
     
     
     func saveModel(value: Movie) {
-       
-        if let rating = value.voteAverage {
-            movieRating.text = "\(MovieListConstant.PropertyLabel.rating.rawValue): \(rating)"
-        }else{
-            movieRating.text = "\(MovieListConstant.PropertyLabel.rating.rawValue): \(MovieListConstant.PropertyLabel.unknown.rawValue)"
-        }
-    
-        if let name = value.title {
-            movieName.text = name
-        }else{
-            movieName.text = MovieListConstant.PropertyLabel.name.rawValue
-        }
-     
+        movieRating.text = cellViewModel?.getMovieRating(movie: value)
+        movieName.text = cellViewModel?.getMovieName(movie: value)
+        
         if let image = value.backdropPath {
             if let url = URL(string: MovieListConstant.profileImage.pathImage(path: image)) {
-                    movieimage.af.setImage(withURL: url)
+                movieimage.af.setImage(withURL: url)
             }
         }else{
             movieimage.image = UIImage(named: "NoImage")
@@ -152,10 +132,10 @@ class MovieListCollectionViewCell: UICollectionViewCell {
             propertyUIMovie(value: movieData)
         }
         else if let tvData = value as? TV {
-         propertyUITV(value: tvData)
+            propertyUITV(value: tvData)
         }else{
-           if let personData = value as? KnownFor {
-               propertyUIPerson(value: personData)
+            if let personData = value as? KnownFor {
+                propertyUIPerson(value: personData)
             }
         }
     }

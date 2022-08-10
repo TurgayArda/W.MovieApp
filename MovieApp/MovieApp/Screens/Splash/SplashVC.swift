@@ -10,7 +10,7 @@ import UIKit
 class SplashVC: UIViewController {
     
     //MARK: Views
-
+    
     private lazy var logoImage: UIImageView = {
         let image = UIImageView()
         image.translatesAutoresizingMaskIntoConstraints = false
@@ -24,10 +24,10 @@ class SplashVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         configure()
         animation()
-      
+        
     }
     
     //MARK: - Private Func
@@ -49,13 +49,13 @@ class SplashVC: UIViewController {
     }
 }
 
-    extension SplashVC {
-        func makeLogo() {
-            logoImage.snp.makeConstraints { make in
-                make.centerX.equalTo(view.snp.centerX)
-                make.centerY.equalTo(view.snp.centerY)
-                make.height.equalTo(view.frame.size.height / 6)
-                make.width.equalTo(view.frame.size.width / 3)
-            }
+extension SplashVC {
+    func makeLogo() {
+        logoImage.snp.makeConstraints { make in
+            make.centerX.equalTo(view.snp.centerX)
+            make.centerY.equalTo(view.snp.centerY)
+            make.height.equalTo(view.frame.size.height / 6)
+            make.width.equalTo(view.frame.size.width / 3)
         }
     }
+}

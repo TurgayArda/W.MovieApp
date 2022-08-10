@@ -12,7 +12,7 @@ struct SearchPersonResult: Codable {
     let page: Int?
     let results: [PersonResult]?
     let totalPages, totalResults: Int?
-
+    
     enum CodingKeys: String, CodingKey {
         case page, results
         case totalPages = "total_pages"
@@ -28,7 +28,7 @@ struct PersonResult: Codable {
     let knownForDepartment, name: String?
     let popularity: Double?
     let profilePath: String?
-
+    
     enum CodingKeys: String, CodingKey {
         case adult, gender, id
         case knownFor = "known_for"
@@ -53,7 +53,7 @@ struct KnownFor: Codable {
     let firstAirDate, name: String?
     let originCountry: [String]?
     let originalName: String?
-
+    
     enum CodingKeys: String, CodingKey {
         case adult
         case backdropPath = "backdrop_path"

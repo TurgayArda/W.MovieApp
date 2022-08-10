@@ -18,7 +18,7 @@ struct Person: Codable {
     let imdbID, knownForDepartment, name, placeOfBirth: String?
     let popularity: Double?
     let profilePath: String?
-
+    
     enum CodingKeys: String, CodingKey {
         case adult
         case alsoKnownAs = "also_known_as"

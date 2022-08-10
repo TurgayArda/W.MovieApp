@@ -8,9 +8,9 @@
 import Foundation
 
 final class MovieDetailBuilder {
-    static func make(id: Int) -> MovieDetailVC {
+    static func make(value: Any) -> MovieDetailVC {
         let view = MovieDetailVC()
-        view.movieDetailViewModel = MovieDetailViewModel(view: view, id: id, service: MovieDetailService(), castService: MovieCastService(), videoService: MovieVideoService())
+        view.movieDetailViewModel = MovieDetailViewModel(view: view, value: value, httpClient: HttpClient())
         return view
     }
 }

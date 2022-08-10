@@ -38,24 +38,6 @@ extension MovieListProvider: MovieListProviderProtocol {
     }
 }
 
-extension MovieListProvider {
-    func goToRouter(value: Any) {
-        if let movieData = value as? Movie {
-            guard let movieID = movieData.id else { return }
-            delegate?.selected(at: movieID)
-        }
-        else if let tvData = value as? TV {
-            guard let tvID = tvData.id else { return }
-            delegate?.selected(at: tvID)
-        }else{
-           if let personData = value as? KnownFor {
-               guard let personID = personData.id else { return }
-               delegate?.selected(at: personID)
-           }
-        }
-    }
-}
-
 extension MovieListProvider: UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func numberOfSections(in collectionView: UICollectionView) -> Int {
         if isSearch {
@@ -71,11 +53,12 @@ extension MovieListProvider: UICollectionViewDataSource, UICollectionViewDelegat
         }
         return movieData.count
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: MovieListCollectionViewCell.Identifier.path.rawValue, for: indexPath) as? MovieListCollectionViewCell else {
             return UICollectionViewCell()
         }
+        cell.cellViewModel = MovieListCollectionCellViewModel()
         
         if isSearch {
             guard let data = searchData[searchHeader[indexPath.section]] else { return cell}
@@ -88,9 +71,9 @@ extension MovieListProvider: UICollectionViewDataSource, UICollectionViewDelegat
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-    let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
-                                                                          withReuseIdentifier: SearchCollectionReusableView.identifier,
-                                                                          for: indexPath) as! SearchCollectionReusableView
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind,
+                                                                     withReuseIdentifier: SearchCollectionReusableView.identifier,
+                                                                     for: indexPath) as! SearchCollectionReusableView
         if isSearch {
             header.titleLabel.text = searchHeader[indexPath.section]
         }else{
@@ -122,11 +105,11 @@ extension MovieListProvider: UICollectionViewDataSource, UICollectionViewDelegat
         if isSearch {
             guard let routerSearch = searchData[searchHeader[indexPath.section]] else { return }
             let routerSearchTwo = routerSearch[indexPath.row]
-            goToRouter(value: routerSearchTwo)
+            delegate?.selected(at: routerSearchTwo)
         }else{
             let routerData = movieData[indexPath.row]
-            guard let id = routerData.id else { return }
-            delegate?.selected(at: id)
+            //guard let id = routerData.id else { return }
+            delegate?.selected(at: routerData)
         }
     }
 }

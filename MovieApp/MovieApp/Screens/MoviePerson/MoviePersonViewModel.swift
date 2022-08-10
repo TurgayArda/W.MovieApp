@@ -10,58 +10,65 @@ import Foundation
 final class MoviePersonViewModel: MoviePersonViewModelProtocol {
     var delegate: MoviePersonViewModelDelegate?
     var personID: Int?
-    var personService: MoviePersonServiceProtocol?
-    var person: Person?
+    var httpClient: HttpClientProtocol?
+    var personData: Person?
     
-    init( personID: Int, personService: MoviePersonServiceProtocol) {
+    init( personID: Int, httpClient: HttpClientProtocol) {
         self.personID = personID
-        self.personService = personService
+        self.httpClient = httpClient
     }
 }
 
 extension MoviePersonViewModel {
     func loadPerson() {
         guard let id = personID else { return }
-        personService?.fetchAllData(path: id, onSuccess: { [delegate] person in
-            self.person = person
-            delegate?.handleOutPut(.selectPerson(person))
-        }, onError: { [delegate] error in
-            delegate?.handleOutPut(.errorPerson(error))
+        guard let url = URL(string: MovieNetworkConstant.MoviePersonNetwork.moviePersonURL(id: id)) else { return }
+        httpClient?.fetch(url: url,
+                          completion: { [delegate] (result: Result<Person, Error>) in
+            switch result {
+            case .success(let person):
+                self.personData = person
+                guard let personDataTwo = self.personData else { return }
+                delegate?.handleOutPut(.selectPerson(personDataTwo))
+            case .failure(let error):
+                delegate?.handleOutPut(.errorPerson(error.localizedDescription))
+                
+            }
         })
     }
 }
 
 extension MoviePersonViewModel {
     func getProperty() -> String {
-        switch person?.gender {
+        switch personData?.gender {
         case 1:
-            return "Female"
+            return "\(MoviePersonConstant.PropertyLabel.gender.rawValue): \(MoviePersonConstant.PropertyLabel.female.rawValue)"
         case 2:
-            return "Male"
+            return"\(MoviePersonConstant.PropertyLabel.gender.rawValue): \(MoviePersonConstant.PropertyLabel.male.rawValue)" 
         default:
-            return "unknow"
+            return MoviePersonConstant.PropertyLabel.unknown.rawValue
         }
     }
     
     func getPersonName() -> String {
-        guard let name = person?.name else {
-            return "unknow"
+        guard let name = personData?.name else {
+            return MoviePersonConstant.PropertyLabel.unknown.rawValue
         }
         
-        return name
+        return "\(MoviePersonConstant.PropertyLabel.name.rawValue): \(name)"
     }
     
     func getBirthday() -> String {
-        guard let birthday = person?.birthday else {
-            return "unknow"
+        guard let birthday = personData?.birthday else {
+            return MoviePersonConstant.PropertyLabel.unknown.rawValue
         }
         
-        return birthday
+        return "\(MoviePersonConstant.PropertyLabel.birthday.rawValue): \(birthday)"
     }
     
     func getBiography() -> String {
-        guard let biography = person?.biography else {
-            return "unknow"
+        guard let biography = personData?.biography else {
+            return MoviePersonConstant.PropertyLabel.unknown.rawValue
         }
         
         return biography

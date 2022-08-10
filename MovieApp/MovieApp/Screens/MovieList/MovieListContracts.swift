@@ -59,6 +59,12 @@ enum MovieListProviderOutPut {
     case error(String)
 }
 
+enum TVDetailProviderOutPut {
+    case select(TVDetailResult)
+    case title(String)
+    case error(String)
+}
+
 enum MovieCastProviderOutPut {
     case castSelect([Cast])
     case castError(String)
@@ -69,7 +75,10 @@ enum MovieVideoProviderOutPut {
     case videoError(String)
 }
 
+
 protocol MovieListProviderDelegate {
-    func selected(at select: Int)
+    func selected(at select: Any)
     func getWidth() -> CGFloat
 }
+
+

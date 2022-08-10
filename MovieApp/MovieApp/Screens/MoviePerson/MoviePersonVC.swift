@@ -89,12 +89,12 @@ class MoviePersonVC: UIViewController {
     var personVievModel: MoviePersonViewModelProtocol?
     var personData: Person?
     var personError: String = ""
-
+    
     //MARK: - Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         personVievModel?.delegate = self
         personVievModel?.loadPerson()
         configure()
@@ -105,7 +105,12 @@ class MoviePersonVC: UIViewController {
     //MARK: - Private Func
     
     private func configure() {
+        configureProperty()
+    }
+    
+    private func configureProperty() {
         view.backgroundColor = .white
+        
         view.addSubview(scrollView)
         scrollView.addSubview(stackView)
         stackView.addArrangedSubview(personImage)
@@ -115,24 +120,28 @@ class MoviePersonVC: UIViewController {
         stackView.addArrangedSubview(descriptionLabel)
         stackView.addArrangedSubview(personDescription)
         stackView.addArrangedSubview(personIMDbButton)
+        
+        configureConstraints()
+    }
+    
+    private func configureConstraints() {
         makeScroll()
         makeStack()
         makeIMDbButton()
         makeImage()
-       
     }
     
     private func clickPersonDetailButton() {
         personIMDbButton.addTarget(self, action: #selector(clickIMDBUrl), for: .touchUpInside)
-     }
-     
-      @objc func clickIMDBUrl(){
-          guard let urlTwo = personData?.imdbID else { return }
-          let url = MoviePersonConstant.MovieDetailIMDBUrl.pathIMDB(id: urlTwo)
-          if let url = URL(string: "\(url)") {
-              UIApplication.shared.open(url, options: [:])
-          }
-     }
+    }
+    
+    @objc func clickIMDBUrl(){
+        guard let urlTwo = personData?.imdbID else { return }
+        let url = MoviePersonConstant.MovieDetailIMDBUrl.pathIMDB(id: urlTwo)
+        if let url = URL(string: "\(url)") {
+            UIApplication.shared.open(url, options: [:])
+        }
+    }
     
     func backBarButton() {
         let rightButton = UIBarButtonItem(title: "Home", style: .plain , target: self, action: #selector(goToBack(_:)))
@@ -144,41 +153,6 @@ class MoviePersonVC: UIViewController {
     }
     
     private func propertyUI(person: Person) {
-//        if person.gender == 2 {
-//            personGender.text = "\(MoviePersonConstant.PropertyLabel.gender.rawValue): \(MoviePersonConstant.PropertyLabel.male.rawValue)"
-//        }
-//
-//        if person.gender == 1 {
-//            personGender.text = "\(MoviePersonConstant.PropertyLabel.gender.rawValue): \(MoviePersonConstant.PropertyLabel.female.rawValue)"
-//        }
-//
-//        if person.gender == 1 || person.gender == 2 {
-//            personGender.text = "\(MoviePersonConstant.PropertyLabel.gender.rawValue): \(MoviePersonConstant.PropertyLabel.unknown.rawValue)"
-//        }
-//
-//        if let name = person.name {
-//            personName.text = "\(MoviePersonConstant.PropertyLabel.name.rawValue): \(name)"
-//        }else{
-//            personName.text = "\(MoviePersonConstant.PropertyLabel.name.rawValue): \(MoviePersonConstant.PropertyLabel.unknown.rawValue)"
-//        }
-//
-//        if let birthday = person.birthday {
-//            personBirthday.text = "\(MoviePersonConstant.PropertyLabel.birthday.rawValue): \(birthday)"
-//        }else{
-//            personBirthday.text = "\(MoviePersonConstant.PropertyLabel.birthday.rawValue): \(MoviePersonConstant.PropertyLabel.unknown.rawValue)"
-//        }
-//
-//        if let biography = person.biography {
-//            if biography == "" {
-//                personDescription.text = "\(MoviePersonConstant.PropertyLabel.unknown.rawValue)"
-//            }else{
-//                personDescription.text = biography
-//            }
-//
-//        }else{
-//            personDescription.text = "\(MoviePersonConstant.PropertyLabel.unknown.rawValue)"
-//        }
-        
         personGender.text = personVievModel?.getProperty()
         personName.text = personVievModel?.getPersonName()
         personBirthday.text = personVievModel?.getBirthday()
@@ -201,7 +175,7 @@ extension MoviePersonVC: MoviePersonViewModelDelegate {
         switch output {
         case .selectPerson(let person):
             self.personData = person
-           propertyUI(person: person)
+            propertyUI(person: person)
         case .errorPerson(let error):
             self.personError = error
         }

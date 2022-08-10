@@ -13,7 +13,7 @@ struct SearchTVResult: Codable {
     let page: Int?
     let results: [TV]?
     let totalPages, totalResults: Int?
-
+    
     enum CodingKeys: String, CodingKey {
         case page, results
         case totalPages = "total_pages"
@@ -34,7 +34,7 @@ struct TV: Codable {
     let posterPath: String?
     let voteAverage: Double?
     let voteCount: Int?
-
+    
     enum CodingKeys: String, CodingKey {
         case backdropPath = "backdrop_path"
         case firstAirDate = "first_air_date"

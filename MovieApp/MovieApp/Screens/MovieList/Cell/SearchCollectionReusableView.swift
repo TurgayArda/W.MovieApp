@@ -23,14 +23,14 @@ class SearchCollectionReusableView: UICollectionReusableView {
     }()
     
     override init(frame: CGRect) {
-            super.init(frame: frame)
-            addSubview(titleLabel)
-
-            titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 8).isActive = true
-            titleLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 16).isActive = true
-        }
-
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
+        super.init(frame: frame)
+        addSubview(titleLabel)
+        
+        titleLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 8).isActive = true
+        titleLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 16).isActive = true
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 }

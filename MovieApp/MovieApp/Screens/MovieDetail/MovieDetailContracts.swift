@@ -20,7 +20,9 @@ protocol MovieDetailViewModelProtocol {
     func getMovieDetailName() -> String
     func getRating() -> String
     func getOverview() -> String
-    func getImage(movieImage: UIImageView) -> UIImageView
+    func getTVDetailName() -> String
+    func getTVRating() -> String
+    func getTVOverview() -> String 
 }
 
 //MARK: ViewController
@@ -29,5 +31,6 @@ protocol MovieDetailViewControllerProtocol {
     func handleOutPut(_ output: MovieListProviderOutPut)
     func casthandleOutPut(_ output: MovieCastProviderOutPut)
     func videohandleOutPut(_ output: MovieVideoProviderOutPut)
+    func tvDetailhandleOutPut(_ output: TVDetailProviderOutPut)
 }
 

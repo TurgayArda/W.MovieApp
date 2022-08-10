@@ -106,7 +106,7 @@ class MovieDetailVC: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         movieDetailViewModel?.loadDetail()
         movieDetailViewModel?.loadCast()
         movieDetailViewModel?.loadVideo()
@@ -121,15 +121,25 @@ class MovieDetailVC: UIViewController {
     }
     
     @objc func router(_ routerPersonButton: UIButton) {
-        guard let id = movieCast[0].id else { return }
-        let personID = id
-        let viewController = MoviePersonBuilder.make(personID: personID)
-        viewController.modalPresentationStyle = .fullScreen
-        self.show(viewController, sender: nil)
+        if movieCast.count == 0 {
+            print("sayfa yok")
+        }else{
+            guard let id = movieCast[0].id else { return }
+            let personID = id
+            let viewController = MoviePersonBuilder.make(personID: personID)
+            viewController.modalPresentationStyle = .fullScreen
+            self.show(viewController, sender: nil)
+        }
+        
     }
     
     private func configure() {
+        configureProperty()
+    }
+    
+    private func configureProperty() {
         view.backgroundColor = .white
+        
         view.addSubview(scrollView)
         scrollView.addSubview(stackView)
         stackView.addArrangedSubview(movieImage)
@@ -140,63 +150,30 @@ class MovieDetailVC: UIViewController {
         stackView.addArrangedSubview(movieCastLabel)
         stackView.addArrangedSubview(youtubePlayer)
         stackView.addArrangedSubview(routerPersonButton)
+        configureConstraints()
+    }
+    
+    private func configureConstraints() {
         makeScroll()
         makeStack()
         makeRouterButton()
         makePlayer()
         makeImage()
-        
     }
     
     private func propertyUIVideo(movieVideo: [Video]) {
-//        if movieVideo.count == 0 {
-//            youtubePlayer.load(withVideoId: "jj6v5ky5u00")
-//        }else{
-//            if let key = movieVideo[0].key {
-//                let videoKey = key
-//                youtubePlayer.load(withVideoId: videoKey)
-//            }
-//        }
         guard let videoKey = movieDetailViewModel?.getVideo() else { return }
         youtubePlayer.load(withVideoId: videoKey)
     }
     
     private func propertyUICast(movieCast: [Cast]) {
-//        for i in 0..<movieCast.count {
-//            if let name = movieCast[i].name {
-//                movieCastList += "\(name), "
-//            }else{
-//                movieCastList += "\(MovieDetailConstant.PropertyLabel.unknown.rawValue)"
-//            }
-//        }
-//        movieCastLabel.text = "\(MovieDetailConstant.PropertyLabel.cast.rawValue): \([movieCastList])"
         movieCastLabel.text = movieDetailViewModel?.getCastList()
     }
     
     
     private func propertyUIDetail(movieDetail: MovieDetailResult) {
-//        if let name = movieDetail.originalTitle  {
-//            movieName.text =  "\(MovieDetailConstant.PropertyLabel.name.rawValue): \(name)"
-//        }else{
-//            movieName.text =  "\(MovieDetailConstant.PropertyLabel.name.rawValue): \(MovieDetailConstant.PropertyLabel.unknown.rawValue)"
-//        }
-        
         movieName.text = movieDetailViewModel?.getMovieDetailName()
-        
-//        if let rating = movieDetail.voteAverage {
-//            movieRating.text = "\(MovieDetailConstant.PropertyLabel.rating.rawValue): \(rating)"
-//        }else{
-//            movieRating.text = "\(MovieDetailConstant.PropertyLabel.rating.rawValue): \(MovieDetailConstant.PropertyLabel.unknown.rawValue)"
-//        }
-         
         movieRating.text = movieDetailViewModel?.getRating()
-        
-//        if let overview = movieDetail.overview {
-//            movieDescription.text = overview
-//        }else{
-//            movieDescription.text = "\(MovieDetailConstant.PropertyLabel.unknown.rawValue)"
-//        }
-        
         movieDescription.text = movieDetailViewModel?.getOverview()
         
         if let image = movieDetail.backdropPath {
@@ -206,16 +183,42 @@ class MovieDetailVC: UIViewController {
         }else{
             movieImage.image = UIImage(named: "NoImage")
         }
+    }
+    
+    private func propertyUITVDetail(tvDetail: TVDetailResult) {
+        movieName.text = movieDetailViewModel?.getTVDetailName()
+        movieRating.text = movieDetailViewModel?.getTVRating()
+        movieDescription.text = movieDetailViewModel?.getTVOverview()
         
+        if let image = tvDetail.backdropPath {
+            if let url = URL(string: MovieDetailConstant.profileImage.pathImage(path: image)) {
+                movieImage.af.setImage(withURL: url)
+            }
+        }else{
+            movieImage.image = UIImage(named: "NoImage")
+        }
     }
 }
 
 //MARK: - MovieDetailViewControllerProtocol
 
 extension MovieDetailVC: MovieDetailViewControllerProtocol {
+    func tvDetailhandleOutPut(_ output: TVDetailProviderOutPut) {
+        switch output {
+        case .select(let tvDetailResult):
+            youtubePlayer.isHidden = true
+            propertyUITVDetail(tvDetail: tvDetailResult)
+        case .title(let string):
+            self.title = title
+        case .error(let error):
+            self.errorMessage = error
+        }
+    }
+    
     func handleOutPut(_ output: MovieListProviderOutPut) {
         switch output {
         case .select(let movieDetailResult):
+            youtubePlayer.isHidden = false
             propertyUIDetail(movieDetail: movieDetailResult)
         case .title(let title):
             self.title = title
@@ -261,7 +264,7 @@ extension MovieDetailVC {
             make.width.equalTo(scrollView.snp.width)
         }
     }
-   
+    
     private func makeRouterButton() {
         routerPersonButton.snp.makeConstraints { make in
             make.height.equalTo(view.frame.size.height / 15)
@@ -269,7 +272,7 @@ extension MovieDetailVC {
             make.centerX.equalTo(view.snp.centerX)
         }
     }
-   
+    
     private func makePlayer() {
         youtubePlayer.snp.makeConstraints { make in
             make.height.equalTo(view.frame.size.height / 3)

@@ -23,7 +23,7 @@ struct Video: Codable {
     let type: String?
     let official: Bool?
     let publishedAt, id: String?
-
+    
     enum CodingKeys: String, CodingKey {
         case name, key, site, size, type, official
         case publishedAt = "published_at"
