@@ -173,6 +173,7 @@ extension MovieListVC: MovieListViewModelDelegate {
     func searchPersonHandleOutPut(_ output: SearchPersonViewModelOutPut) {
         switch output {
         case .searchPerson(let person):
+            self.searchPersonData.removeAll()
             for i in person {
                 if let knownFor = i.knownFor {
                     searchPersonData.append(contentsOf: knownFor)
